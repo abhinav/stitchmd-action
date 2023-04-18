@@ -1,0 +1,44 @@
+{
+  "name": "stitchmd-action",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runs stitchmd on a Markdown file.",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write '**/*.ts'",
+    "format-check": "prettier --check '**/*.ts'",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map --license licenses.txt",
+    "test": "jest",
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinav/stitchmd-action.git"
+  },
+  "keywords": [
+    "markdown"
+  ],
+  "author": "Abhinav Gupta",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.1.1",
+    "@actions/tool-cache": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "@vercel/ncc": "^0.36.1",
+    "eslint": "^8.38.0",
+    "eslint-plugin-github": "^4.7.0",
+    "eslint-plugin-jest": "^27.2.1",
+    "jest": "^29.5.0",
+    "js-yaml": "^4.1.0",
+    "prettier": "^2.8.7",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.4"
+  }
+}

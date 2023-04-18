@@ -1,0 +1,60 @@
+name: 'stitchmd action'
+description: 'Stitches together multiple Markdown files using stitchmd.'
+author: 'Abhinav Gupta'
+inputs:
+  summary:
+    required: true
+    description: >-
+      Path to the input summary file.
+      This defines the layout of the resulting Markdown file.
+  output:
+    required: true
+    description: >-
+      Path to the output Markdown file.
+  mode:
+    required: false
+    description: >-
+      Execution mode for the action.
+      Supported execution modes are: 'install', 'check', and 'write'.
+      'install' verifies the tool and exits.
+      'check' verifies that the output file is up to date. This is the default.
+      'write' updates the output file in the workspace if it's outdated.
+    default: 'check'
+  preface:
+    required: false
+    description: >-
+      Path to a preface file.
+      The contents of this file will be included verbatim
+      at the top of the output file.
+  offset:
+    required: false
+    description: >-
+      Offset for heading levels.
+      Defaults to zero.
+    default: '0'
+  no-toc:
+    required: false
+    description: >-
+      Don't generate a table-of-contents under each section.
+      Defaults to false.
+    default: 'false'
+  version:
+    required: false
+    description: >-
+      Version of stitchmd to use.
+      Defaults to the latest version.
+    default: 'latest'
+  github-token:
+    required: false
+    description: >-
+      Access token used to make requests to the GitHub API.
+    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
+
+outputs:
+  install-path:
+    description: >-
+      Path at which stitchmd was installed.
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
