@@ -7,6 +7,26 @@ branding:
   color: green
 
 inputs:
+  mode:
+    required: false
+    description: >-
+      Execution mode for the action.
+      Supported execution modes are: 'install', 'check', and 'write'.
+      'install' verifies the tool and exits.
+      'check' verifies that the output file is up to date. This is the default.
+      'write' updates the output file in the workspace if it's outdated.
+    default: 'check'
+  version:
+    required: false
+    description: >-
+      Version of stitchmd to use.
+      Defaults to the latest version.
+    default: 'latest'
+  github-token:
+    required: false
+    description: >-
+      Access token used to make requests to the GitHub API.
+    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
   summary:
     required: false
     description: >-
@@ -18,15 +38,6 @@ inputs:
     description: >-
       Path to the output Markdown file.
       Required if mode is not 'install'.
-  mode:
-    required: false
-    description: >-
-      Execution mode for the action.
-      Supported execution modes are: 'install', 'check', and 'write'.
-      'install' verifies the tool and exits.
-      'check' verifies that the output file is up to date. This is the default.
-      'write' updates the output file in the workspace if it's outdated.
-    default: 'check'
   preface:
     required: false
     description: >-
@@ -50,17 +61,6 @@ inputs:
     description: >-
       In check mode, allow output to be out-of-sync and don't fail the job.
     default: 'false'
-  version:
-    required: false
-    description: >-
-      Version of stitchmd to use.
-      Defaults to the latest version.
-    default: 'latest'
-  github-token:
-    required: false
-    description: >-
-      Access token used to make requests to the GitHub API.
-    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 
 outputs:
   install-path:
