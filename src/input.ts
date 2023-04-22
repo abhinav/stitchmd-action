@@ -17,19 +17,28 @@ export enum Mode {
     Write = 'write'
 }
 
-// Inputs to the action.
-//
-// Should match the inputs defined in action.yml.
-export interface Inputs {
-    summary: string
-    output: string
-    mode: Mode
-    preface: string
-    offset: number
-    noToc: boolean
+type InstallInputs = {
     version: string
     githubToken: string
 }
+
+type RunInputs = {
+    summary: string
+    output: string
+    preface: string
+    offset: number
+    noToc: boolean
+}
+
+// Inputs to the action.
+//
+// Should match the inputs defined in action.yml.
+export type Inputs = InstallInputs &
+    (
+        | {mode: Mode.Install}
+        | ({mode: Mode.Write} & RunInputs)
+        | ({mode: Mode.Check; checkCanFail: boolean} & RunInputs)
+    )
 
 // The context of the action.
 //
@@ -43,26 +52,36 @@ export interface InputSource {
 //
 // It will throw an error if any required inputs are missing.
 export function newInputs(src: InputSource): Inputs {
-    const summary = src.getInput('summary', {required: true})
-    const output = src.getInput('output', {required: true})
     const mode = src.getInput('mode') || 'check'
     if (!Object.values(Mode).includes(mode as Mode)) {
         throw new Error(`Invalid mode: ${mode}`)
     }
-    const preface = src.getInput('preface') || ''
-    const offset = parseInt(src.getInput('offset') || '0', 10)
-    const noToc = src.getBooleanInput('no-toc')
-    const version = src.getInput('version') || 'latest'
-    const githubToken = src.getInput('github-token', {required: true})
+
+    const installInputs: InstallInputs = {
+        version: src.getInput('version') || 'latest',
+        githubToken: src.getInput('github-token', {required: true})
+    }
+
+    if (mode === Mode.Install) {
+        return {mode, ...installInputs}
+    }
+
+    const runInputs: RunInputs = {
+        summary: src.getInput('summary', {required: true}),
+        output: src.getInput('output', {required: true}),
+        preface: src.getInput('preface') || '',
+        offset: parseInt(src.getInput('offset') || '0', 10),
+        noToc: src.getBooleanInput('no-toc')
+    }
+
+    if (mode === Mode.Write) {
+        return {mode, ...installInputs, ...runInputs}
+    }
 
     return {
-        summary,
-        output,
-        mode: mode as Mode,
-        preface,
-        offset,
-        noToc,
-        version,
-        githubToken
+        mode: Mode.Check,
+        ...installInputs,
+        ...runInputs,
+        checkCanFail: src.getBooleanInput('check-can-fail') || false
     }
 }

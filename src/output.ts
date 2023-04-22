@@ -3,6 +3,7 @@
 // Should match the outputs defined in action.yml.
 export interface Outputs {
     installPath?: string
+    checkFailed?: boolean
 }
 
 // Output context of the action.
@@ -14,7 +15,10 @@ export interface OutputSink {
 
 // writeOutputs writes the given outputs to the given context.
 export function writeOutputs(sink: OutputSink, outputs: Outputs): void {
-    if (outputs.installPath) {
+    if (outputs.installPath !== undefined) {
         sink.setOutput('install-path', outputs.installPath)
+    }
+    if (outputs.checkFailed !== undefined) {
+        sink.setOutput('check-failed', outputs.checkFailed.toString())
     }
 }

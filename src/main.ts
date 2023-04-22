@@ -6,12 +6,13 @@ import * as github from '@actions/github'
 import * as toolcache from '@actions/tool-cache'
 
 import {Inputs, Mode, newInputs} from './input'
-import {writeOutputs} from './output'
+import {writeOutputs, Outputs} from './output'
 import {Gateway as GitHubGateway} from './github'
 import * as install from './install'
 import * as stitchmd from './stitchmd'
 
 async function main(): Promise<void> {
+    const outputs: Outputs = {}
     try {
         const inputs: Inputs = newInputs(core)
 
@@ -30,8 +31,7 @@ async function main(): Promise<void> {
             arch: os.arch(),
             version: inputs.version
         })
-
-        writeOutputs(core, {installPath})
+        outputs.installPath = installPath
 
         if (inputs.mode === Mode.Install) {
             core.info(`Installed stitchmd to ${installPath}`)
@@ -39,24 +39,28 @@ async function main(): Promise<void> {
         }
 
         const runner = new stitchmd.Runner(exec, installPath)
+        const check = inputs.mode === Mode.Check
         const result = await runner.run({
             ...inputs,
-            diff: inputs.mode === Mode.Check
+            diff: check
         })
 
-        if (result.stdout.length > 0) {
-            core.error('Changes detected', {
-                file: inputs.output
-            })
-
-            core.startGroup('Changes')
-            core.info(result.stdout)
-            core.setFailed(`${inputs.output} is not up to date`)
+        if (check) {
+            if (result.stdout.length > 0) {
+                outputs.checkFailed = true
+                if (!inputs.checkCanFail) {
+                    core.setFailed(`${inputs.output} is not up to date`)
+                }
+            } else {
+                core.info(`${inputs.output} is up to date`)
+            }
         }
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message)
         }
+    } finally {
+        writeOutputs(core, outputs)
     }
 }
 

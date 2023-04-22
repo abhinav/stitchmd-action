@@ -9,6 +9,7 @@ on:
 jobs:
 
   build:
+    name: Build action
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -28,13 +29,66 @@ jobs:
       - name: Test
         run: npm test
 
-  test:
+  test-install:
     runs-on: ubuntu-latest
-
+    name: "Test / install"
     steps:
       - uses: actions/checkout@v3
+      - uses: ./
+        id: stitchmd
+        with:
+          mode: install
+      - run: |
+          ${{ steps.stitchmd.outputs.install-path }} -version
 
+  test-check:
+    runs-on: ubuntu-latest
+    name: "Test / check / success"
+    steps:
+      - uses: actions/checkout@v3
       - uses: ./
         with:
           summary: doc/README.md
           output: README.md
+
+  test-write:
+    runs-on: ubuntu-latest
+    name: "Test / write"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo oops > README.md
+      - uses: ./
+        with:
+          summary: doc/README.md
+          output: README.md
+          mode: write
+      - run: |
+          if ! git diff --quiet; then
+            echo "Files have changed:"
+            git status
+            echo "::group::Diff"
+            git diff
+            echo "::endgroup::"
+            exit 1
+          fi
+
+  test-check-fail:
+    runs-on: ubuntu-latest
+    name: "Test / check / fail"
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          echo oops > README.md
+      - uses: ./
+        id: stitchmd
+        with:
+          summary: doc/README.md
+          output: README.md
+          check-can-fail: true
+      - run: |
+          if [[ "${{ steps.stitchmd.outputs.check-failed }}" != "true" ]]; then
+            echo "Check did not fail"
+            exit 1
+          fi

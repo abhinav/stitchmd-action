@@ -22,7 +22,8 @@ export function buildArgList(args: Args): string[] {
         result.push('-no-toc')
     }
     if (args.diff) {
-        result.push('-diff')
+        // Enable color because GitHub knows how to render it.
+        result.push('-diff', '-color=always')
     }
     result.push(toPlatformPath(args.summary))
     return result

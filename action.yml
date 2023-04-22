@@ -3,14 +3,16 @@ description: 'Stitches together multiple Markdown files using stitchmd.'
 author: 'Abhinav Gupta'
 inputs:
   summary:
-    required: true
+    required: false
     description: >-
       Path to the input summary file.
       This defines the layout of the resulting Markdown file.
+      Required if mode is not 'install'.
   output:
-    required: true
+    required: false
     description: >-
       Path to the output Markdown file.
+      Required if mode is not 'install'.
   mode:
     required: false
     description: >-
@@ -38,6 +40,11 @@ inputs:
       Don't generate a table-of-contents under each section.
       Defaults to false.
     default: 'false'
+  check-can-fail:
+    required: false
+    description: >-
+      In check mode, allow output to be out-of-sync and don't fail the job.
+    default: 'false'
   version:
     required: false
     description: >-
@@ -54,6 +61,10 @@ outputs:
   install-path:
     description: >-
       Path at which stitchmd was installed.
+  check-failed:
+    description: >-
+      Whether the check operation failed.
+      This output is undefined in other modes.
 
 runs:
   using: 'node16'
