@@ -1,0 +1,30 @@
+name: Create draft release
+
+on:
+  push:
+    branches: [main]
+    paths: [CHANGELOG.md]
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Get the latest version
+      id: latest
+      uses: miniscruff/changie-action@v1
+      with:
+        args: latest
+
+    - name: Create release draft
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        name: ${{ steps.latest.outputs.output }}
+        tag_name: ${{ steps.latest.outputs.output }}
+        body_path: .changes/${{ steps.latest.outputs.output }}.md
