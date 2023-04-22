@@ -20,16 +20,22 @@ export enum Mode {
 // Inputs to the action.
 //
 // Should match the inputs defined in action.yml.
-export interface Inputs {
-    summary: string
-    output: string
-    mode: Mode
-    preface: string
-    offset: number
-    noToc: boolean
-    version: string
-    githubToken: string
-}
+export type Inputs =
+    | {
+          mode: Mode.Install
+          version: string
+          githubToken: string
+      }
+    | {
+          summary: string
+          output: string
+          mode: Mode.Check | Mode.Write
+          preface: string
+          offset: number
+          noToc: boolean
+          version: string
+          githubToken: string
+      }
 
 // The context of the action.
 //
@@ -43,26 +49,27 @@ export interface InputSource {
 //
 // It will throw an error if any required inputs are missing.
 export function newInputs(src: InputSource): Inputs {
-    const summary = src.getInput('summary', {required: true})
-    const output = src.getInput('output', {required: true})
     const mode = src.getInput('mode') || 'check'
     if (!Object.values(Mode).includes(mode as Mode)) {
         throw new Error(`Invalid mode: ${mode}`)
     }
-    const preface = src.getInput('preface') || ''
-    const offset = parseInt(src.getInput('offset') || '0', 10)
-    const noToc = src.getBooleanInput('no-toc')
-    const version = src.getInput('version') || 'latest'
-    const githubToken = src.getInput('github-token', {required: true})
+
+    if (mode === Mode.Install) {
+        return {
+            mode: Mode.Install,
+            version: src.getInput('version') || 'latest',
+            githubToken: src.getInput('github-token', {required: true})
+        }
+    }
 
     return {
-        summary,
-        output,
+        summary: src.getInput('summary', {required: true}),
+        output: src.getInput('output', {required: true}),
         mode: mode as Mode,
-        preface,
-        offset,
-        noToc,
-        version,
-        githubToken
+        preface: src.getInput('preface') || '',
+        offset: parseInt(src.getInput('offset') || '0', 10),
+        noToc: src.getBooleanInput('no-toc'),
+        version: src.getInput('version') || 'latest',
+        githubToken: src.getInput('github-token', {required: true})
     }
 }

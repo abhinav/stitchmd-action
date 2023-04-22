@@ -39,9 +39,10 @@ async function main(): Promise<void> {
         }
 
         const runner = new stitchmd.Runner(exec, installPath)
+        const check = inputs.mode === Mode.Check
         const result = await runner.run({
             ...inputs,
-            diff: inputs.mode === Mode.Check
+            diff: check
         })
 
         if (result.stdout.length > 0) {
@@ -52,6 +53,8 @@ async function main(): Promise<void> {
             core.startGroup('Changes')
             core.info(result.stdout)
             core.setFailed(`${inputs.output} is not up to date`)
+        } else if (check) {
+            core.info(`${inputs.output} is up to date`)
         }
     } catch (error) {
         if (error instanceof Error) {

@@ -79,26 +79,26 @@ var Mode;
 //
 // It will throw an error if any required inputs are missing.
 function newInputs(src) {
-    const summary = src.getInput('summary', { required: true });
-    const output = src.getInput('output', { required: true });
     const mode = src.getInput('mode') || 'check';
     if (!Object.values(Mode).includes(mode)) {
         throw new Error(`Invalid mode: ${mode}`);
     }
-    const preface = src.getInput('preface') || '';
-    const offset = parseInt(src.getInput('offset') || '0', 10);
-    const noToc = src.getBooleanInput('no-toc');
-    const version = src.getInput('version') || 'latest';
-    const githubToken = src.getInput('github-token', { required: true });
+    if (mode === Mode.Install) {
+        return {
+            mode: Mode.Install,
+            version: src.getInput('version') || 'latest',
+            githubToken: src.getInput('github-token', { required: true })
+        };
+    }
     return {
-        summary,
-        output,
+        summary: src.getInput('summary', { required: true }),
+        output: src.getInput('output', { required: true }),
         mode: mode,
-        preface,
-        offset,
-        noToc,
-        version,
-        githubToken
+        preface: src.getInput('preface') || '',
+        offset: parseInt(src.getInput('offset') || '0', 10),
+        noToc: src.getBooleanInput('no-toc'),
+        version: src.getInput('version') || 'latest',
+        githubToken: src.getInput('github-token', { required: true })
     };
 }
 exports.newInputs = newInputs;
@@ -259,7 +259,8 @@ function main() {
                 return;
             }
             const runner = new stitchmd.Runner(exec, installPath);
-            const result = yield runner.run(Object.assign(Object.assign({}, inputs), { diff: inputs.mode === input_1.Mode.Check }));
+            const check = inputs.mode === input_1.Mode.Check;
+            const result = yield runner.run(Object.assign(Object.assign({}, inputs), { diff: check }));
             if (result.stdout.length > 0) {
                 core.error('Changes detected', {
                     file: inputs.output
@@ -267,6 +268,9 @@ function main() {
                 core.startGroup('Changes');
                 core.info(result.stdout);
                 core.setFailed(`${inputs.output} is not up to date`);
+            }
+            else if (check) {
+                core.info(`${inputs.output} is up to date`);
             }
         }
         catch (error) {

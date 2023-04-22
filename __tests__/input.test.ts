@@ -31,25 +31,45 @@ test('newInputs/invalidMode', () => {
     expect(() => input.newInputs(src)).toThrow('Invalid mode: invalid')
 })
 
-test('newInputs/all', () => {
-    const src = mapInputSource({
-        summary: 'summary',
-        output: 'output',
-        mode: 'check',
-        preface: 'preface',
-        offset: '1',
-        'no-toc': 'true',
-        version: 'version',
-        'github-token': 'github-token'
-    })
-
+test.each([
+    {
+        name: 'install',
+        give: {
+            mode: 'install',
+            version: 'version',
+            'github-token': 'github-token'
+        } as {[key: string]: string},
+        want: {
+            mode: input.Mode.Install,
+            version: 'version',
+            githubToken: 'github-token'
+        }
+    },
+    {
+        name: 'check',
+        give: {
+            summary: 'summary',
+            output: 'output',
+            mode: 'check',
+            preface: 'preface',
+            offset: '1',
+            'no-toc': 'true',
+            version: 'version',
+            'github-token': 'github-token'
+        },
+        want: {
+            summary: 'summary',
+            output: 'output',
+            mode: input.Mode.Check,
+            preface: 'preface',
+            offset: 1,
+            noToc: true,
+            version: 'version',
+            githubToken: 'github-token'
+        }
+    }
+])('newInputs/$name', ({give, want}) => {
+    const src = mapInputSource(give)
     const inputs = input.newInputs(src)
-    expect(inputs.summary).toEqual('summary')
-    expect(inputs.output).toEqual('output')
-    expect(inputs.mode).toEqual(input.Mode.Check)
-    expect(inputs.preface).toEqual('preface')
-    expect(inputs.offset).toEqual(1)
-    expect(inputs.noToc).toEqual(true)
-    expect(inputs.version).toEqual('version')
-    expect(inputs.githubToken).toEqual('github-token')
+    expect(inputs).toEqual(want)
 })
