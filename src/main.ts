@@ -15,7 +15,7 @@ async function main(): Promise<void> {
     try {
         const inputs: Inputs = newInputs(core)
 
-        const repos = github.getOctokit(inputs.github_token, {
+        const repos = github.getOctokit(inputs.githubToken, {
             userAgent: 'stitchmd-action'
         }).rest.repos
         const githubGateway = new GitHubGateway(repos)

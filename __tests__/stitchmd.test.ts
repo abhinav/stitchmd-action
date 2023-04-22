@@ -34,12 +34,12 @@ test.each([
         want: ['-o', 'output', '-offset', '1', 'summary']
     },
     {
-        desc: 'no_toc',
+        desc: 'noToc',
         give: {
             summary: 'summary',
             output: 'output',
             diff: false,
-            no_toc: true
+            noToc: true
         },
         want: ['-o', 'output', '-no-toc', 'summary']
     }

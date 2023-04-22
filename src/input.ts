@@ -26,9 +26,9 @@ export interface Inputs {
     mode: Mode
     preface: string
     offset: number
-    no_toc: boolean
+    noToc: boolean
     version: string
-    github_token: string
+    githubToken: string
 }
 
 // The context of the action.
@@ -51,9 +51,9 @@ export function newInputs(src: InputSource): Inputs {
     }
     const preface = src.getInput('preface') || ''
     const offset = parseInt(src.getInput('offset') || '0', 10)
-    const no_toc = src.getBooleanInput('no-toc')
+    const noToc = src.getBooleanInput('no-toc')
     const version = src.getInput('version') || 'latest'
-    const github_token = src.getInput('github-token', {required: true})
+    const githubToken = src.getInput('github-token', {required: true})
 
     return {
         summary,
@@ -61,8 +61,8 @@ export function newInputs(src: InputSource): Inputs {
         mode: mode as Mode,
         preface,
         offset,
-        no_toc,
+        noToc,
         version,
-        github_token
+        githubToken
     }
 }

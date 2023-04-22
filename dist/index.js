@@ -87,18 +87,18 @@ function newInputs(src) {
     }
     const preface = src.getInput('preface') || '';
     const offset = parseInt(src.getInput('offset') || '0', 10);
-    const no_toc = src.getBooleanInput('no-toc');
+    const noToc = src.getBooleanInput('no-toc');
     const version = src.getInput('version') || 'latest';
-    const github_token = src.getInput('github-token', { required: true });
+    const githubToken = src.getInput('github-token', { required: true });
     return {
         summary,
         output,
         mode: mode,
         preface,
         offset,
-        no_toc,
+        noToc,
         version,
-        github_token
+        githubToken
     };
 }
 exports.newInputs = newInputs;
@@ -240,7 +240,7 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = (0, input_1.newInputs)(core);
-            const repos = github.getOctokit(inputs.github_token, {
+            const repos = github.getOctokit(inputs.githubToken, {
                 userAgent: 'stitchmd-action'
             }).rest.repos;
             const githubGateway = new github_1.Gateway(repos);
@@ -325,7 +325,7 @@ function buildArgList(args) {
     if (args.offset) {
         result.push('-offset', args.offset.toString());
     }
-    if (args.no_toc) {
+    if (args.noToc) {
         result.push('-no-toc');
     }
     if (args.diff) {
@@ -343,15 +343,15 @@ class Runner {
     run(args) {
         return __awaiter(this, void 0, void 0, function* () {
             const stdout = [];
-            let stdout_listener;
+            let stdoutListener;
             if (args.diff) {
-                stdout_listener = (data) => {
+                stdoutListener = (data) => {
                     stdout.push(...data.values());
                 };
             }
             yield this.exec.exec(this.installPath, buildArgList(args), {
                 listeners: {
-                    stdout: stdout_listener
+                    stdout: stdoutListener
                 }
             });
             return {

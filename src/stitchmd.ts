@@ -6,7 +6,7 @@ export interface Args {
     diff: boolean
     preface?: string
     offset?: number
-    no_toc?: boolean
+    noToc?: boolean
 }
 
 export function buildArgList(args: Args): string[] {
@@ -18,7 +18,7 @@ export function buildArgList(args: Args): string[] {
     if (args.offset) {
         result.push('-offset', args.offset.toString())
     }
-    if (args.no_toc) {
+    if (args.noToc) {
         result.push('-no-toc')
     }
     if (args.diff) {
@@ -55,16 +55,16 @@ export class Runner {
 
     async run(args: Args): Promise<RunResult> {
         const stdout: number[] = []
-        let stdout_listener: ((data: Buffer) => void) | undefined
+        let stdoutListener: ((data: Buffer) => void) | undefined
         if (args.diff) {
-            stdout_listener = (data: Buffer) => {
+            stdoutListener = (data: Buffer) => {
                 stdout.push(...data.values())
             }
         }
 
         await this.exec.exec(this.installPath, buildArgList(args), {
             listeners: {
-                stdout: stdout_listener
+                stdout: stdoutListener
             }
         })
 
