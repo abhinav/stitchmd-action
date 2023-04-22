@@ -86,23 +86,9 @@ jobs:
         with:
           summary: doc/README.md
           output: README.md
-      - if: ${{ failure() }}
-        id: result
-        run: |
-          echo status=failure >> "$GITHUB_OUTPUT"
-    outputs:
-      status: ${{ steps.result.outputs.status }}
-
-  test-check-fail-verify:
-    runs-on: ubuntu-latest
-    needs: [test-check-fail]
-    name: "Test / check / fail (verify)"
-    if: ${{ always() }}
-    steps:
+          check-can-fail: true
       - run: |
-          STATUS=${{ needs.test-check-fail.outputs.status }}
-          if [[ "$STATUS" != failure ]]; then
-            echo "test-check-fail did not fail"
+          if [[ "${{ steps.stitchmd.outputs.check-failed }}" != "true" ]]; then
+            echo "Check did not fail"
             exit 1
           fi
-

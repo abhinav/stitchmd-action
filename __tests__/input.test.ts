@@ -18,15 +18,11 @@ function mapInputSource(values: {[key: string]: string}): input.InputSource {
 
 test('newInputs/missing', () => {
     const src = mapInputSource({})
-    expect(() => input.newInputs(src)).toThrow('Missing input: summary')
+    expect(() => input.newInputs(src)).toThrow('Missing input: github-token')
 })
 
 test('newInputs/invalidMode', () => {
-    const src = mapInputSource({
-        summary: 'summary',
-        output: 'output',
-        mode: 'invalid'
-    })
+    const src = mapInputSource({mode: 'invalid'})
 
     expect(() => input.newInputs(src)).toThrow('Invalid mode: invalid')
 })
@@ -43,6 +39,29 @@ test.each([
             mode: input.Mode.Install,
             version: 'version',
             githubToken: 'github-token'
+        } as input.Inputs
+    },
+    {
+        name: 'write',
+        give: {
+            summary: 'summary',
+            output: 'output',
+            mode: 'write',
+            preface: 'preface',
+            offset: '1',
+            'no-toc': 'true',
+            version: 'version',
+            'github-token': 'github-token'
+        },
+        want: {
+            summary: 'summary',
+            output: 'output',
+            mode: input.Mode.Write,
+            preface: 'preface',
+            offset: 1,
+            noToc: true,
+            version: 'version',
+            githubToken: 'github-token'
         }
     },
     {
@@ -55,7 +74,8 @@ test.each([
             offset: '1',
             'no-toc': 'true',
             version: 'version',
-            'github-token': 'github-token'
+            'github-token': 'github-token',
+            'check-can-fail': 'true'
         },
         want: {
             summary: 'summary',
@@ -65,7 +85,8 @@ test.each([
             offset: 1,
             noToc: true,
             version: 'version',
-            githubToken: 'github-token'
+            githubToken: 'github-token',
+            checkCanFail: true
         }
     }
 ])('newInputs/$name', ({give, want}) => {

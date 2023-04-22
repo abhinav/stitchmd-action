@@ -17,25 +17,28 @@ export enum Mode {
     Write = 'write'
 }
 
+type InstallInputs = {
+    version: string
+    githubToken: string
+}
+
+type RunInputs = {
+    summary: string
+    output: string
+    preface: string
+    offset: number
+    noToc: boolean
+}
+
 // Inputs to the action.
 //
 // Should match the inputs defined in action.yml.
-export type Inputs =
-    | {
-          mode: Mode.Install
-          version: string
-          githubToken: string
-      }
-    | {
-          summary: string
-          output: string
-          mode: Mode.Check | Mode.Write
-          preface: string
-          offset: number
-          noToc: boolean
-          version: string
-          githubToken: string
-      }
+export type Inputs = InstallInputs &
+    (
+        | {mode: Mode.Install}
+        | ({mode: Mode.Write} & RunInputs)
+        | ({mode: Mode.Check; checkCanFail: boolean} & RunInputs)
+    )
 
 // The context of the action.
 //
@@ -54,22 +57,31 @@ export function newInputs(src: InputSource): Inputs {
         throw new Error(`Invalid mode: ${mode}`)
     }
 
+    const installInputs: InstallInputs = {
+        version: src.getInput('version') || 'latest',
+        githubToken: src.getInput('github-token', {required: true})
+    }
+
     if (mode === Mode.Install) {
-        return {
-            mode: Mode.Install,
-            version: src.getInput('version') || 'latest',
-            githubToken: src.getInput('github-token', {required: true})
-        }
+        return {mode, ...installInputs}
+    }
+
+    const runInputs: RunInputs = {
+        summary: src.getInput('summary', {required: true}),
+        output: src.getInput('output', {required: true}),
+        preface: src.getInput('preface') || '',
+        offset: parseInt(src.getInput('offset') || '0', 10),
+        noToc: src.getBooleanInput('no-toc')
+    }
+
+    if (mode === Mode.Write) {
+        return {mode, ...installInputs, ...runInputs}
     }
 
     return {
-        summary: src.getInput('summary', {required: true}),
-        output: src.getInput('output', {required: true}),
-        mode: mode as Mode,
-        preface: src.getInput('preface') || '',
-        offset: parseInt(src.getInput('offset') || '0', 10),
-        noToc: src.getBooleanInput('no-toc'),
-        version: src.getInput('version') || 'latest',
-        githubToken: src.getInput('github-token', {required: true})
+        mode: Mode.Check,
+        ...installInputs,
+        ...runInputs,
+        checkCanFail: src.getBooleanInput('check-can-fail') || false
     }
 }

@@ -83,23 +83,24 @@ function newInputs(src) {
     if (!Object.values(Mode).includes(mode)) {
         throw new Error(`Invalid mode: ${mode}`);
     }
-    if (mode === Mode.Install) {
-        return {
-            mode: Mode.Install,
-            version: src.getInput('version') || 'latest',
-            githubToken: src.getInput('github-token', { required: true })
-        };
-    }
-    return {
-        summary: src.getInput('summary', { required: true }),
-        output: src.getInput('output', { required: true }),
-        mode: mode,
-        preface: src.getInput('preface') || '',
-        offset: parseInt(src.getInput('offset') || '0', 10),
-        noToc: src.getBooleanInput('no-toc'),
+    const installInputs = {
         version: src.getInput('version') || 'latest',
         githubToken: src.getInput('github-token', { required: true })
     };
+    if (mode === Mode.Install) {
+        return Object.assign({ mode }, installInputs);
+    }
+    const runInputs = {
+        summary: src.getInput('summary', { required: true }),
+        output: src.getInput('output', { required: true }),
+        preface: src.getInput('preface') || '',
+        offset: parseInt(src.getInput('offset') || '0', 10),
+        noToc: src.getBooleanInput('no-toc')
+    };
+    if (mode === Mode.Write) {
+        return Object.assign(Object.assign({ mode }, installInputs), runInputs);
+    }
+    return Object.assign(Object.assign(Object.assign({ mode: Mode.Check }, installInputs), runInputs), { checkCanFail: src.getBooleanInput('check-can-fail') || false });
 }
 exports.newInputs = newInputs;
 
@@ -238,6 +239,7 @@ const install = __importStar(__nccwpck_require__(9039));
 const stitchmd = __importStar(__nccwpck_require__(6861));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
+        const outputs = {};
         try {
             const inputs = (0, input_1.newInputs)(core);
             const repos = github.getOctokit(inputs.githubToken, {
@@ -253,7 +255,7 @@ function main() {
                 arch: os.arch(),
                 version: inputs.version
             });
-            (0, output_1.writeOutputs)(core, { installPath });
+            outputs.installPath = installPath;
             if (inputs.mode === input_1.Mode.Install) {
                 core.info(`Installed stitchmd to ${installPath}`);
                 return;
@@ -261,22 +263,29 @@ function main() {
             const runner = new stitchmd.Runner(exec, installPath);
             const check = inputs.mode === input_1.Mode.Check;
             const result = yield runner.run(Object.assign(Object.assign({}, inputs), { diff: check }));
-            if (result.stdout.length > 0) {
-                core.error('Changes detected', {
-                    file: inputs.output
-                });
-                core.startGroup('Changes');
-                core.info(result.stdout);
-                core.setFailed(`${inputs.output} is not up to date`);
-            }
-            else if (check) {
-                core.info(`${inputs.output} is up to date`);
+            if (check) {
+                if (result.stdout.length > 0) {
+                    outputs.checkFailed = true;
+                    yield core.summary
+                        .addHeading(`${inputs.output} is out of date`)
+                        .addCodeBlock(result.stdout, 'diff')
+                        .write();
+                    if (!inputs.checkCanFail) {
+                        core.setFailed(`${inputs.output} is not up to date`);
+                    }
+                }
+                else {
+                    core.info(`${inputs.output} is up to date`);
+                }
             }
         }
         catch (error) {
             if (error instanceof Error) {
                 core.setFailed(error.message);
             }
+        }
+        finally {
+            (0, output_1.writeOutputs)(core, outputs);
         }
     });
 }
@@ -294,8 +303,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.writeOutputs = void 0;
 // writeOutputs writes the given outputs to the given context.
 function writeOutputs(sink, outputs) {
-    if (outputs.installPath) {
+    if (outputs.installPath !== undefined) {
         sink.setOutput('install-path', outputs.installPath);
+    }
+    if (outputs.checkFailed !== undefined) {
+        sink.setOutput('check-failed', outputs.checkFailed.toString());
     }
 }
 exports.writeOutputs = writeOutputs;
