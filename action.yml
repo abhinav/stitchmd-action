@@ -1,6 +1,11 @@
 name: 'stitchmd action'
 description: 'Stitches together multiple Markdown files using stitchmd.'
 author: 'Abhinav Gupta'
+
+branding:
+  icon: list
+  color: green
+
 inputs:
   summary:
     required: false
