@@ -8,5 +8,7 @@ jobs:
   tag:
     name: Push release tags
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: Actions-R-Us/actions-tagger@latest

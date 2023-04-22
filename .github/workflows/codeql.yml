@@ -10,7 +10,6 @@ on:
 
 jobs:
   analyze:
-    if: false # TODO enable when public
     name: Analyze
     runs-on: ubuntu-latest
 
