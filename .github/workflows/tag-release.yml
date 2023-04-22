@@ -1,0 +1,12 @@
+name: Tag release
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  tag:
+    name: Push release tags
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Actions-R-Us/actions-tagger@latest
