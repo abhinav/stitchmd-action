@@ -11,7 +11,7 @@ test.each([
     {
         desc: 'diff',
         give: {summary: 'summary', output: 'output', diff: true},
-        want: ['-o', 'output', '-diff', 'summary']
+        want: ['-o', 'output', '-diff', '-color=always', 'summary']
     },
     {
         desc: 'preface',

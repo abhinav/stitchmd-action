@@ -48,10 +48,6 @@ async function main(): Promise<void> {
         if (check) {
             if (result.stdout.length > 0) {
                 outputs.checkFailed = true
-                await core.summary
-                    .addHeading(`${inputs.output} is out of date`)
-                    .addCodeBlock(result.stdout, 'diff')
-                    .write()
                 if (!inputs.checkCanFail) {
                     core.setFailed(`${inputs.output} is not up to date`)
                 }

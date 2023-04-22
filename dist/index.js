@@ -266,10 +266,6 @@ function main() {
             if (check) {
                 if (result.stdout.length > 0) {
                     outputs.checkFailed = true;
-                    yield core.summary
-                        .addHeading(`${inputs.output} is out of date`)
-                        .addCodeBlock(result.stdout, 'diff')
-                        .write();
                     if (!inputs.checkCanFail) {
                         core.setFailed(`${inputs.output} is not up to date`);
                     }
@@ -345,7 +341,8 @@ function buildArgList(args) {
         result.push('-no-toc');
     }
     if (args.diff) {
-        result.push('-diff');
+        // Enable color because GitHub knows how to render it.
+        result.push('-diff', '-color=always');
     }
     result.push((0, core_1.toPlatformPath)(args.summary));
     return result;
