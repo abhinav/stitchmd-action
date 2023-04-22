@@ -46,12 +46,11 @@ async function main(): Promise<void> {
         })
 
         if (result.stdout.length > 0) {
-            core.error('Changes detected', {
-                file: inputs.output
-            })
+            await core.summary
+                .addHeading(`${inputs.output} is out of date`)
+                .addCodeBlock(result.stdout, 'diff')
+                .write()
 
-            core.startGroup('Changes')
-            core.info(result.stdout)
             core.setFailed(`${inputs.output} is not up to date`)
         } else if (check) {
             core.info(`${inputs.output} is up to date`)
