@@ -74,7 +74,7 @@ var Mode;
     // Write will install and run stitchmd,
     // and write its output to disk.
     Mode["Write"] = "write";
-})(Mode = exports.Mode || (exports.Mode = {}));
+})(Mode || (exports.Mode = Mode = {}));
 // newInputs reads inputs from the given context.
 //
 // It will throw an error if any required inputs are missing.
