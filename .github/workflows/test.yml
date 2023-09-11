@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Test / install"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         id: stitchmd
         with:
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Test / check / success"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         with:
           summary: doc/README.md
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Test / write"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: |
           echo oops > README.md
       - uses: ./
@@ -91,7 +91,7 @@ jobs:
     name: "Test / check / fail"
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: |
           echo oops > README.md
       - uses: ./
