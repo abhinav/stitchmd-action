@@ -61,7 +61,8 @@ exports.Gateway = Gateway;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.newInputs = exports.Mode = void 0;
+exports.Mode = void 0;
+exports.newInputs = newInputs;
 // Mode defines the supported execution modes.
 var Mode;
 (function (Mode) {
@@ -102,7 +103,6 @@ function newInputs(src) {
     }
     return Object.assign(Object.assign(Object.assign({ mode: Mode.Check }, installInputs), runInputs), { checkCanFail: src.getBooleanInput('check-can-fail') || false });
 }
-exports.newInputs = newInputs;
 
 
 /***/ }),
@@ -296,7 +296,7 @@ main();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.writeOutputs = void 0;
+exports.writeOutputs = writeOutputs;
 // writeOutputs writes the given outputs to the given context.
 function writeOutputs(sink, outputs) {
     if (outputs.installPath !== undefined) {
@@ -306,7 +306,6 @@ function writeOutputs(sink, outputs) {
         sink.setOutput('check-failed', outputs.checkFailed.toString());
     }
 }
-exports.writeOutputs = writeOutputs;
 
 
 /***/ }),
@@ -326,7 +325,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Runner = exports.buildArgList = void 0;
+exports.Runner = void 0;
+exports.buildArgList = buildArgList;
 const core_1 = __nccwpck_require__(2186);
 function buildArgList(args) {
     const result = [];
@@ -347,7 +347,6 @@ function buildArgList(args) {
     result.push((0, core_1.toPlatformPath)(args.summary));
     return result;
 }
-exports.buildArgList = buildArgList;
 class Runner {
     constructor(exec, installPath) {
         this.installPath = installPath;
