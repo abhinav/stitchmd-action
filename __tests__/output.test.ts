@@ -19,7 +19,7 @@ test.each([
         want: {'check-failed': 'false'}
     }
 ])('writeOutputs($name)', ({give, want}) => {
-    let got: Record<string, string> = {}
+    const got: Record<string, string> = {}
     const sink: output.OutputSink = {
         setOutput: (name: string, value: string) => {
             got[name] = value
