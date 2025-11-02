@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 
-export {InputOptions} from '@actions/core'
+export type {InputOptions} from '@actions/core'
 
 // Mode defines the supported execution modes.
 export enum Mode {
@@ -52,10 +52,11 @@ export interface InputSource {
 //
 // It will throw an error if any required inputs are missing.
 export function newInputs(src: InputSource): Inputs {
-    const mode = src.getInput('mode') || 'check'
-    if (!Object.values(Mode).includes(mode as Mode)) {
-        throw new Error(`Invalid mode: ${mode}`)
+    const modeStr = src.getInput('mode') || 'check'
+    if (!Object.values(Mode).includes(modeStr as Mode)) {
+        throw new Error(`Invalid mode: ${modeStr}`)
     }
+    const mode = modeStr as Mode
 
     const installInputs: InstallInputs = {
         version: src.getInput('version') || 'latest',

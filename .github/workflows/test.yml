@@ -21,19 +21,16 @@ jobs:
         with:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref }}
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16.x
-          cache: npm
+      - name: Set up mise
+        uses: jdx/mise-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
 
       - name: Build dist
-        run: |
-          npm run build
-          npm run package
+        run: bun run build
 
       # Only verify on main
       - name: Verify dist status
@@ -53,10 +50,10 @@ jobs:
           commit_message: "Update dist"
 
       - name: Lint
-        run: npm run lint
+        run: bun run lint
 
       - name: Test
-        run: npm test
+        run: bun test
 
   test-install:
     runs-on: ubuntu-latest
