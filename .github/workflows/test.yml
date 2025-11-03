@@ -18,8 +18,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
+        if: ${{ github.event_name != 'pull_request' }}
+      - name: Check out PR branch
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@v5
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref }}
+          ref: ${{ github.head_ref }}
 
       - name: Set up mise
         uses: jdx/mise-action@v3
