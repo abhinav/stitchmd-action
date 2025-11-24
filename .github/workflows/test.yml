@@ -17,11 +17,11 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         if: ${{ github.event_name != 'pull_request' }}
       - name: Check out PR branch
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
 
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Test / install"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./
         id: stitchmd
         with:
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Test / check / success"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ./
         with:
           summary: doc/README.md
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Test / write"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: |
           echo oops > README.md
       - uses: ./
@@ -108,7 +108,7 @@ jobs:
     name: "Test / check / fail"
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: |
           echo oops > README.md
       - uses: ./
