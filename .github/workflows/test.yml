@@ -26,7 +26,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Set up mise
-        uses: jdx/mise-action@v3
+        uses: jdx/mise-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

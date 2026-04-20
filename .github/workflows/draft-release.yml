@@ -17,12 +17,12 @@ jobs:
 
     - name: Get the latest version
       id: latest
-      uses: miniscruff/changie-action@v2
+      uses: miniscruff/changie-action@v3
       with:
         args: latest
 
     - name: Create release draft
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         draft: true
         name: ${{ steps.latest.outputs.output }}
