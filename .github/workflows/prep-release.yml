@@ -19,26 +19,26 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
     - name: Batch changes
-      uses: miniscruff/changie-action@v3
+      uses: miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4 # v3
       with:
         args: batch ${{ inputs.version }}
 
     - name: Merge changes
-      uses: miniscruff/changie-action@v3
+      uses: miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4 # v3
       with:
         args: merge
 
     - name: Get the latest version
       id: latest
-      uses: miniscruff/changie-action@v3
+      uses: miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4 # v3
       with:
         args: latest
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v8
+      uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8
       with:
         title: Release ${{ steps.latest.outputs.output }}
         branch: release/${{ steps.latest.outputs.output }}

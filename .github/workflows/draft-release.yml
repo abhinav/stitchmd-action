@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
     - name: Get the latest version
       id: latest
-      uses: miniscruff/changie-action@v3
+      uses: miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4 # v3
       with:
         args: latest
 
     - name: Create release draft
-      uses: softprops/action-gh-release@v3
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3
       with:
         draft: true
         name: ${{ steps.latest.outputs.output }}
