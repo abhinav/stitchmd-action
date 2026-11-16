@@ -4,21 +4,21 @@
 version: 'v0.0.3'
 workflows:
     '.github/workflows/codeql.yml':
-        - 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803'
+        - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'github/codeql-action@33d7b85da1a04171e211befe2c739303b9a4c066'
     '.github/workflows/draft-release.yml':
-        - 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803'
+        - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4'
         - 'softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3'
     '.github/workflows/prep-release.yml':
-        - 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803'
+        - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
         - 'miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4'
         - 'peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1'
     '.github/workflows/tag-release.yml':
         - 'actions-r-us/actions-tagger@330ddfac760021349fef7ff62b372f2f691c20fb'
     '.github/workflows/test.yml':
-        - 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803'
-        - 'jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c'
+        - 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        - 'jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b'
         - 'stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c'
 dependencies:
     'actions-r-us/actions-tagger@330ddfac760021349fef7ff62b372f2f691c20fb':
@@ -26,9 +26,9 @@ dependencies:
         commit: 'sha1-330ddfac760021349fef7ff62b372f2f691c20fb'
         owner_id: 58990726
         repo_id: 228677300
-    'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803':
-        ref: 'v6.1.0'
-        commit: 'sha1-d23441a48e516b6c34aea4fa41551a30e30af803'
+    'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1':
+        ref: 'v7.0.1'
+        commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
     'github/codeql-action@33d7b85da1a04171e211befe2c739303b9a4c066':
@@ -36,9 +36,9 @@ dependencies:
         commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
-    'jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c':
-        ref: 'v4.3.0'
-        commit: 'sha1-c2a87611a18de5b3828c5652fe268e992400cb5c'
+    'jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b':
+        ref: 'v5.2.7'
+        commit: 'sha1-b44d12e7d0d8ee7461bb893e1b1993500433185b'
         owner_id: 216188
         repo_id: 738284564
     'miniscruff/changie-action@3223cb29b92a0972dedc864ace3da01e04780ae4':
